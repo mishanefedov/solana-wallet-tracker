@@ -1,6 +1,9 @@
 import { Connection, PublicKey } from '@solana/web3.js';
 import fetch from 'node-fetch';
 import { readFileSync } from 'fs';
+import { config } from 'dotenv';
+
+config();
 
 const SOLANA_RPC_URL = process.env.SOLANA_RPC_URL;
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
