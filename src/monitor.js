@@ -49,7 +49,8 @@ async function monitorWallet(wallet) {
                     )
                     const blockTime = confirmedTransaction.blockTime;
                     const date = new Date(blockTime * 1000); // Convert to milliseconds
-                    const message = `Tx time: [${date.toISOString()}], wallet: ${walletAddress} (${walletName})\n\n${JSON.stringify(confirmedTransaction, null, 2)}`;
+                    // const message = `Tx time: [${date.toISOString()}], wallet: ${walletAddress} (${walletName})\n\n${JSON.stringify(confirmedTransaction, null, 2)}`;
+                    const message = `Tx time: [${date.toISOString()}], wallet: ${walletAddress} (${walletName})\n\nhttps://solscan.io/account/${walletAddress}`;
                     console.log(message);
                     await sendTelegramMessage(message);
                 } else {
