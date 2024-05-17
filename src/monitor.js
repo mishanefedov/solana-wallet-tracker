@@ -30,7 +30,11 @@ async function sendTelegramMessage(message) {
     return response.json();
 }
 
-async function monitorWallet(wallet) {
+async function monitorWallet(wallet, index, listLength) {
+    const generalWaitingTime = 10000 * listLength;
+    const startDelay = 10000 * index;
+    await new Promise(resolve => setTimeout(resolve, startDelay));
+
     let lastSignature = null;
     const walletAddress = wallet.toString();
     const walletName = walletMap.get(walletAddress);
@@ -44,9 +48,6 @@ async function monitorWallet(wallet) {
                 if (newSignature !== lastSignature) {
                     lastSignature = newSignature;
                     const confirmedTransaction = await connection.getConfirmedTransaction(newSignature);
-                    console.log(
-                        'instructions', (confirmedTransaction.transaction.instructions)
-                    )
                     const blockTime = confirmedTransaction.blockTime;
                     const date = new Date(blockTime * 1000); // Convert to milliseconds
                     // const message = `Tx time: [${date.toISOString()}], wallet: ${walletAddress} (${walletName})\n\n${JSON.stringify(confirmedTransaction, null, 2)}`;
@@ -62,11 +63,11 @@ async function monitorWallet(wallet) {
         } catch (error) {
             console.error(`Error monitoring wallet ${walletAddress}:`, error);
         }
-        await new Promise(resolve => setTimeout(resolve, 10000));
+        await new Promise(resolve => setTimeout(resolve, generalWaitingTime));
     }
 }
 
 export async function monitorWallets() {
-    const monitorPromises = walletAddresses.map(wallet => monitorWallet(wallet));
+    const monitorPromises = walletAddresses.map((wallet, index) => monitorWallet(wallet, index, walletAddresses.length));
     await Promise.all(monitorPromises);
 }
